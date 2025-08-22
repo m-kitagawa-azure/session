@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head><meta charset="UTF-8"><title>ユーザー管理</title></head>
+<body>
+<h1>ユーザー管理</h1>
+<div th:if="${msg}" th:text="${msg}" style="color:green;"></div>
+
+<p><a th:href="@{/admin/users/new}">ユーザー追加</a></p>
+
+<table border="1" cellpadding="6">
+    <tr><th>ユーザー名</th><th>有効</th><th>権限</th><th>操作</th></tr>
+    <tr th:each="u : ${users}">
+        <td th:text="${u.username}">alice</td>
+        <td th:text="${u.enabled}">true</td>
+        <td>
+            <form th:action="@{|/admin/users/${u.username}/roles|}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <label><input type="checkbox" name="roles" value="USER"
+                              th:checked="${#lists.contains(authMap.get(u.username), 'ROLE_USER')}"> ROLE_USER</label>
+                <label><input type="checkbox" name="roles" value="ADMIN"
+                              th:checked="${#lists.contains(authMap.get(u.username), 'ROLE_ADMIN')}"> ROLE_ADMIN</label>
+                <button type="submit">更新</button>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{|/admin/users/${u.username}/enabled|}" method="post" style="display:inline">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <input type="hidden" name="enabled" th:value="${!u.enabled}">
+                <button type="submit" th:text="${u.enabled} ? '無効化' : '有効化'">無効化</button>
+            </form>
+            <form th:action="@{|/admin/users/${u.username}/delete|}" method="post" style="display:inline"
+                  onsubmit="return confirm('本当に削除しますか？');">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit">削除</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+<p><a th:href="@{/hello}">戻る</a></p>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head><meta charset="UTF-8"><title>Login</title></head>
+<body>
+<h1>Sign in</h1>
+
+<div th:if="${param.error}">Invalid username or password</div>
+<div th:if="${param.logout}">You have been logged out</div>
+
+<form th:action="@{/logout}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <button type="submit">ログアウト</button>
+</form>
+
+</body>
+</html>
